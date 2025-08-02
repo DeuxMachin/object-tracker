@@ -1,8 +1,8 @@
 
+
 import cv2
 import numpy as np
-from ..utils.config import CAMERA_INDEX, CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FPS
-
+from shared.config import CAMERA_INDEX, CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FPS
 
 class CameraHandler:
     """
@@ -42,7 +42,7 @@ class CameraHandler:
             # ¿Se pudo abrir la cámara?
             if not self.cap.isOpened():
                 print(f"❌ No se pudo abrir la cámara {self.camera_index}")
-                print("💡 Prueba cambiar CAMERA_INDEX en src/utils/config.py")
+                print("💡 Prueba cambiar CAMERA_INDEX en shared/config.py")
                 return False
             
             # Configurar la calidad y tamaño del video

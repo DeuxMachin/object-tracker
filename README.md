@@ -307,25 +307,6 @@ pip install --upgrade --force-reinstall -r requirements.txt
 
 ## Contribución y Desarrollo
 
-### Estructura del Código
-
-```
-src/
-├── detection/          # Módulos de detección de objetos
-│   ├── yolo_detector.py
-│   └── base_detector.py
-├── tracking/           # Algoritmos de seguimiento
-│   ├── deep_sort.py
-│   ├── kalman_filter.py
-│   └── matching.py
-├── utils/              # Utilidades y configuración
-│   ├── config.py
-│   ├── metrics.py
-│   └── visualization.py
-└── video/              # Manejo de video e interfaz
-    ├── camera_handler.py
-    └── stream_processor.py
-```
 
 ### Guidelines de Desarrollo
 
@@ -344,5 +325,5 @@ src/
 ---
 
 **Licencia**: MIT License  
-**Autor**: DeuxMachin  
+**Autor**: Edward Contreras (DeuxMachine)  
 **Repositorio**: https://github.com/DeuxMachin/object-tracker

@@ -1,4 +1,11 @@
 
+"""
+Object Tracking System - Main Entry Point
+
+Sistema modular de seguimiento de objetos con arquitectura cliente-servidor.
+- Cliente: Captura de video desde cámaras web
+- Servidor: Procesamiento, detección y tracking de objetos
+"""
 
 import sys
 import os
@@ -7,25 +14,31 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
 try:
-    from src.video.camera_handler import test_camera
-    print("✅ Todos los módulos importados correctamente")
+    from client.camera_handler import test_camera
+    print("✅ Módulos importados correctamente")
 except ImportError as e:
     print(f"❌ Error al importar módulos: {e}")
-    print()
+    print("💡 Verifica que todas las dependencias estén instaladas")
+    print("   pip install opencv-python numpy")
     sys.exit(1)
 
 
 def main():
-
+    """Función principal del sistema."""
     
-    # 🎨 Banner de bienvenida
+    # Banner del sistema
     print("=" * 60)
-    print("🎥 SISTEMA DE SEGUIMIENTO DE OBJETOS")
-    print("   ¡Bienvenido al futuro de la visión computacional!")
+    print("� OBJECT TRACKING SYSTEM")
+    print("   Sistema Modular de Seguimiento de Objetos")
     print("=" * 60)
     print()
-    print("📹 MODO ACTUAL: Prueba de Cámara Web")
-    print("🎯 PRÓXIMAMENTE: Detección y seguimiento inteligente")
+    print("📋 ARQUITECTURA:")
+    print("   • CLIENT:  Captura de video (cámara web)")
+    print("   • SERVER:  Procesamiento y tracking")
+    print("   • SHARED:  Configuración común")
+    print()
+    print("📹 MODO ACTUAL: Test de Cámara (Cliente)")
+    print("🔜 PRÓXIMO: Integración con servidor de detección")
     print("=" * 60)
     print()
     print("💡 INSTRUCCIONES:")
