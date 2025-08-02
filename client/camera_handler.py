@@ -1,7 +1,20 @@
 
 
+"""
+Manejador de Cámara Web - Cliente de Captura
+
+Maneja la conexión, configuración y captura de frames desde cámaras web.
+Proporciona interfaz unificada para dispositivos de video.
+"""
+
 import cv2
 import numpy as np
+import sys
+import os
+
+# Agregar directorio padre al path para imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from shared.config import CAMERA_INDEX, CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FPS
 
 class CameraHandler:
