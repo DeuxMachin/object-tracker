@@ -1,0 +1,36 @@
+# 📦 DEPENDENCIAS DEL PROYECTO
+# Estas son las librerías que necesita el proyecto para funcionar
+
+# === LIBRERÍAS BÁSICAS (FASE 1) ===
+# Estas ya las necesitamos para que funcione la cámara
+opencv-python==4.8.1.78  # 📸 Para manejar video e imágenes
+numpy==1.24.3             # 🔢 Para operaciones matemáticas con arrays
+
+# === PRÓXIMAS LIBRERÍAS (FASES SIGUIENTES) ===
+# Estas las instalaremos cuando las necesitemos:
+
+# 🤖 INTELIGENCIA ARTIFICIAL
+# torch==2.0.1           # Para ejecutar modelos de deep learning
+# torchvision==0.15.2    # Utilidades para visión computacional
+# ultralytics==8.0.165   # YOLOv8 para detección de objetos
+
+# 🎯 SEGUIMIENTO DE OBJETOS  
+# filterpy==1.4.5        # Filtro de Kalman para tracking
+# scipy==1.11.1          # Operaciones científicas avanzadas
+
+# 🌐 DESARROLLO WEB
+# flask==2.3.2           # Servidor web para la interfaz
+# flask-cors==4.0.0      # Para permitir requests desde el navegador
+# flask-socketio==5.3.4  # Para comunicación en tiempo real
+
+# 💾 BASE DE DATOS
+# supabase==1.0.4        # Para guardar datos en la nube
+# python-dotenv==1.0.0   # Para manejar variables de entorno
+
+# 🛠️ UTILIDADES
+# pillow==10.0.0         # Para manipular imágenes
+# matplotlib==3.7.2      # Para crear gráficos y visualizaciones
+
+# 🧪 DESARROLLO Y TESTING  
+# pytest==7.4.0          # Para pruebas automatizadas
+# black==23.7.0           # Para formatear código automáticamente

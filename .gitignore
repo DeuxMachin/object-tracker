@@ -1,0 +1,87 @@
+# Python Environment
+SeguimientoObjetos_env/
+env/
+venv/
+.env
+.venv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.Python
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Machine Learning Models
+models/
+*.pth
+*.pt
+yolov8*.pt
+best.pt
+last.pt
+
+# Data and Media Files
+data/
+datasets/
+videos/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Images (except examples)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+!examples/
+!demo/
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# Configuration with secrets
+config.local.py
+.secrets
+*.key
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*~
+*.bak
+
+# Cache
+.cache/
+cache/
+
+# Documentation build
+docs/_build/
+
+# Flask (future web interface)
+flask_session/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
