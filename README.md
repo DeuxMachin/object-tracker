@@ -1,50 +1,50 @@
-# Sistema de Seguimiento Multi-Objeto en Tiempo Real
+# Real-Time Multi-Object Tracking System
 
-## Descripción del Proyecto
+## Project Description
 
-Este sistema implementa un framework completo de seguimiento multi-objeto (Multiple Object Tracking - MOT) que combina técnicas avanzadas de visión computacional y aprendizaje profundo para rastrear múltiples entidades en secuencias de video en tiempo real.
+This system implements a comprehensive Multiple Object Tracking (MOT) framework that combines advanced computer vision techniques and deep learning to track multiple entities in video sequences in real-time.
 
-El sistema integra detección de objetos basada en redes neuronales convolucionales, algoritmos de asociación de datos probabilísticos y filtros de estado para mantener consistencia temporal en el seguimiento, proporcionando identificadores únicos persistentes para cada objeto detectado a lo largo de la secuencia.
+The system integrates neural network-based object detection, probabilistic data association algorithms, and state filters to maintain temporal consistency in tracking, providing persistent unique identifiers for each detected object throughout the sequence.
 
-## Arquitectura del Sistema
+## System Architecture
 
-### Pipeline de Procesamiento
+### Processing Pipeline
 
-El sistema sigue una arquitectura modular de múltiples etapas:
+The system follows a modular multi-stage architecture:
 
-1. **Adquisición de Video**: Captura de frames desde dispositivos de entrada (webcam, archivos de video)
-2. **Preprocesamiento**: Normalización, redimensionamiento y augmentación de datos
-3. **Detección de Objetos**: Identificación y localización de entidades mediante redes neuronales
-4. **Extracción de Características**: Generación de descriptores visuales para asociación
-5. **Asociación de Datos**: Emparejamiento temporal usando algoritmos probabilísticos
-6. **Estimación de Estado**: Predicción de trayectorias mediante filtros estadísticos
-7. **Post-procesamiento**: Refinamiento de resultados y gestión de identificadores
+1. **Video Acquisition**: Frame capture from input devices (webcam, video files)
+2. **Preprocessing**: Normalization, resizing, and data augmentation
+3. **Object Detection**: Entity identification and localization using neural networks
+4. **Feature Extraction**: Visual descriptor generation for association
+5. **Data Association**: Temporal matching using probabilistic algorithms
+6. **State Estimation**: Trajectory prediction using statistical filters
+7. **Post-processing**: Result refinement and identifier management
 
-### Aplicaciones
+### Applications
 
-- **Sistemas de Videovigilancia**: Análisis comportamental y detección de anomalías
-- **Análisis de Tráfico Vehicular**: Conteo, clasificación y análisis de flujo vehicular
-- **Monitoreo Deportivo**: Tracking de jugadores y análisis de rendimiento
-- **Investigación en Visión Computacional**: Evaluación de algoritmos MOT
-- **Robótica Móvil**: Navegación y evasión de obstáculos dinámicos
+- **Video Surveillance Systems**: Behavioral analysis and anomaly detection
+- **Vehicle Traffic Analysis**: Vehicle counting, classification, and flow analysis
+- **Sports Monitoring**: Player tracking and performance analysis
+- **Computer Vision Research**: MOT algorithm evaluation
+- **Mobile Robotics**: Navigation and dynamic obstacle avoidance
 
-## Fundamentos Teóricos
+## Theoretical Foundations
 
-### Detección de Objetos
+### Object Detection
 
-El sistema utiliza **YOLOv8** (You Only Look Once version 8), una red neuronal convolucional de una sola etapa que reformula la detección de objetos como un problema de regresión. A diferencia de los detectores de dos etapas (como R-CNN), YOLO divide la imagen de entrada en una grilla S×S y predice simultáneamente:
+The system utilizes **YOLOv8** (You Only Look Once version 8), a single-stage convolutional neural network that reformulates object detection as a regression problem. Unlike two-stage detectors (such as R-CNN), YOLO divides the input image into an S×S grid and simultaneously predicts:
 
-- **Coordenadas de bounding boxes**: (x, y, w, h) normalizadas
-- **Confianza de objetividad**: P(Object) * IoU(pred, truth)
-- **Probabilidades de clase**: P(Class_i | Object)
+- **Bounding box coordinates**: (x, y, w, h) normalized
+- **Objectness confidence**: P(Object) × IoU(pred, truth)
+- **Class probabilities**: P(Class_i | Object)
 
-La función de pérdida combina errores de localización, confianza y clasificación:
+The loss function combines localization, confidence, and classification errors:
 
 ```
-Loss = λ_coord * L_coord + λ_obj * L_obj + λ_noobj * L_noobj + λ_class * L_class
+Loss = λ_coord × L_coord + λ_obj × L_obj + λ_noobj × L_noobj + λ_class × L_class
 ```
 
-### Seguimiento Multi-Objeto (MOT)
+### Multi-Object Tracking (MOT)
 
 #### Deep SORT Algorithm
 

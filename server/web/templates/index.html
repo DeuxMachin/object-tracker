@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Optimized Video Streaming Server</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .client-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .client-optimized { background-color: #28a745; color: white; }
+        .client-standard { background-color: #6c757d; color: white; }
+        .performance-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .perf-excellent { background-color: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+        .perf-good { background-color: #fff3cd; color: #856404; border-left: 4px solid #ffc107; }
+        .perf-poor { background-color: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+    </style>
+    <script>
+        // Auto-refresh cada 3 segundos para mejor tiempo real
+        setTimeout(function(){ location.reload(); }, 3000);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Optimized Video Streaming Server</h1>
+            <p>Enhanced receiver for TurboJPEG + Multithreading clients</p>
+            {% if stats and stats.client_type %}
+                <span class="client-indicator client-{{ 'optimized' if stats.is_optimized_client else 'standard' }}">
+                    {{ stats.client_type.upper() }} CLIENT
+                </span>
+            {% endif %}
+        </div>
+        
+        <div class="content">
+            <div class="video-panel panel">
+                <h2>Video Stream</h2>
+                <div class="video-container">
+                    {% if has_frames %}
+                        <img src="/current_frame" alt="Current Frame">
+                        <p class="refresh-note">Actualización automática cada 3 segundos</p>
+                    {% else %}
+                        <p style="color: #666; font-size: 1.2em; padding: 40px;">
+                            <span class="status-indicator status-inactive"></span>
+                            Waiting for frames from optimized client...
+                        </p>
+                        <div style="margin-top: 20px; font-size: 0.9em; color: #888;">
+                            <p><strong>Supported optimizations:</strong></p>
+                            <p>TurboJPEG compression</p>
+                            <p>Multithreaded capture/compression/sending</p>
+                            <p>Advanced performance metrics</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="stats-panel panel">
+                <h2>
+                    <span class="status-indicator {% if is_active %}status-active{% else %}status-inactive{% endif %}"></span>
+                    Optimized System Status
+                </h2>
+                
+                {% if stats %}
+                    <div class="stat-row">
+                        <span class="stat-label">Received Frames:</span>
+                        <span>{{ stats.frames_received }}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Average FPS:</span>
+                        <span>{{ "%.1f"|format(stats.fps_received) }}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Average Size:</span>
+                        <span>{{ "%.1f"|format(stats.avg_frame_size_kb) }} KB</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Throughput:</span>
+                        <span>{{ "%.2f"|format(stats.mbps) }} MB/s</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Process per Frame:</span>
+                        <span>{{ "%.1f"|format(stats.avg_process_time_ms) }} ms</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Received:</span>
+                        <span>{{ "%.1f"|format(stats.total_mb) }} MB</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Buffer:</span>
+                        <span>{{ stats.buffer_size }}/{{ stats.max_buffer_size }} frames</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Client Type:</span>
+                        <span>{{ stats.client_type }}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Last Frame:</span>
+                        <span>
+                            {% if stats.last_frame_ago < 3 %}
+                                <span style="color: green;">{{ "%.1f"|format(stats.last_frame_ago) }}s ago</span>
+                            {% elif stats.last_frame_ago < 10 %}
+                                <span style="color: orange;">{{ "%.1f"|format(stats.last_frame_ago) }}s ago</span>
+                            {% else %}
+                                <span style="color: red;">{{ "%.1f"|format(stats.last_frame_ago) }}s ago</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <!-- Indicadores de rendimiento -->
+                    <hr style="margin: 15px 0;">
+                    
+                    {% set fps_efficiency = (stats.fps_received / 30) * 100 %}
+                    {% if fps_efficiency >= 90 %}
+                        <div class="performance-badge perf-excellent">
+                            <strong>Excellent FPS:</strong> {{ "%.1f"|format(fps_efficiency) }}% of target
+                        </div>
+                    {% elif fps_efficiency >= 70 %}
+                        <div class="performance-badge perf-good">
+                            <strong>Good FPS:</strong> {{ "%.1f"|format(fps_efficiency) }}% of target
+                        </div>
+                    {% else %}
+                        <div class="performance-badge perf-poor">
+                            <strong>Low FPS:</strong> {{ "%.1f"|format(fps_efficiency) }}% of target
+                        </div>
+                    {% endif %}
+                    
+                    {% if stats.avg_process_time_ms < 5 %}
+                        <div class="performance-badge perf-excellent">
+                            <strong>Ultra-fast Processing:</strong> {{ "%.1f"|format(stats.avg_process_time_ms) }}ms
+                        </div>
+                    {% elif stats.avg_process_time_ms < 15 %}
+                        <div class="performance-badge perf-good">
+                            <strong>Normal Processing:</strong> {{ "%.1f"|format(stats.avg_process_time_ms) }}ms
+                        </div>
+                    {% else %}
+                        <div class="performance-badge perf-poor">
+                            <strong>Slow Processing:</strong> {{ "%.1f"|format(stats.avg_process_time_ms) }}ms
+                        </div>
+                    {% endif %}
+                    
+                {% else %}
+                    <p>Sin estadísticas disponibles</p>
+                {% endif %}
+                
+                <h3>Configuration:</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Port:</span>
+                    <span>5000</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Endpoint:</span>
+                    <span>/upload</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Max Buffer:</span>
+                    <span>20 frames</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9em;">
+            <p><strong>To use the optimized client:</strong></p>
+            <p><code>python client/remote_client.py</code></p>
+            <p>Make sure you have TurboJPEG: <code>pip install PyTurboJPEG</code></p>
+        </div>
+    </div>
+</body>
+</html>

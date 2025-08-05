@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Optimized Video Streaming Server</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .protocol-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .protocol-http { background-color: #3498db; color: white; }
+        .protocol-mjpeg { background-color: #e74c3c; color: white; }
+        .protocol-none { background-color: #95a5a6; color: white; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .performance-indicator {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 5px 0;
+        }
+        .perf-excellent { background-color: #d4edda; border-left: 4px solid #28a745; }
+        .perf-good { background-color: #fff3cd; border-left: 4px solid #ffc107; }
+        .perf-poor { background-color: #f8d7da; border-left: 4px solid #dc3545; }
+    </style>
+    <script>
+        // Auto-refresh cada 3 segundos para métricas en tiempo real
+        setTimeout(function(){ location.reload(); }, 3000);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Optimized Video Streaming Server</h1>
+            <p>Soporte para HTTP POST y MJPEG Stream</p>
+            {% if stats %}
+                <span class="protocol-indicator protocol-{{ stats.protocol_used.lower() }}">
+                    {{ stats.protocol_used }} ACTIVO
+                </span>
+            {% endif %}
+        </div>
+        
+        <div class="content">
+            <div class="video-panel panel">
+                <h2>📺 Video Stream</h2>
+                <div class="video-container">
+                    {% if has_frames %}
+                        <img src="/current_frame" alt="Current Frame">
+                        <p class="refresh-note">Actualización automática cada 3 segundos</p>
+                    {% else %}
+                        <p style="color: #666; font-size: 1.2em; padding: 40px;">
+                            <span class="status-indicator status-inactive"></span>
+                            Esperando conexión del cliente...
+                        </p>
+                        <div style="margin-top: 20px; font-size: 0.9em; color: #888;">
+                            <p><strong>Protocolos soportados:</strong></p>
+                            <p>🔸 HTTP POST: Puerto 5000/upload</p>
+                            <p>🔸 MJPEG Stream: Puerto 5001</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="stats-panel panel">
+                <h2>
+                    <span class="status-indicator {% if is_active %}status-active{% else %}status-inactive{% endif %}"></span>
+                    Estado del Sistema
+                </h2>
+                
+                {% if stats %}
+                    <div class="stats-grid">
+                        <div>
+                            <div class="stat-row">
+                                <span class="stat-label">Total Frames:</span>
+                                <span>{{ stats.total_frames }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">HTTP Frames:</span>
+                                <span>{{ stats.http_frames }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">MJPEG Frames:</span>
+                                <span>{{ stats.mjpeg_frames }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="stat-row">
+                                <span class="stat-label">FPS Total:</span>
+                                <span>{{ "%.1f"|format(stats.fps_total) }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">FPS HTTP:</span>
+                                <span>{{ "%.1f"|format(stats.fps_http) }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">FPS MJPEG:</span>
+                                <span>{{ "%.1f"|format(stats.fps_mjpeg) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr style="margin: 15px 0;">
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">Throughput:</span>
+                        <span>{{ "%.2f"|format(stats.mbps) }} MB/s</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Tamaño Promedio:</span>
+                        <span>{{ "%.1f"|format(stats.avg_frame_size_kb) }} KB</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Proceso Promedio:</span>
+                        <span>{{ "%.1f"|format(stats.avg_process_time_ms) }} ms</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Recibido:</span>
+                        <span>{{ "%.1f"|format(stats.total_mb) }} MB</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Buffer:</span>
+                        <span>{{ stats.buffer_size }}/20 frames</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Último Frame:</span>
+                        <span>
+                            {% if stats.last_frame_ago < 3 %}
+                                <span style="color: green;">{{ "%.1f"|format(stats.last_frame_ago) }}s ago</span>
+                            {% elif stats.last_frame_ago < 10 %}
+                                <span style="color: orange;">{{ "%.1f"|format(stats.last_frame_ago) }}s ago</span>
+                            {% else %}
+                                <span style="color: red;">{{ "%.1f"|format(stats.last_frame_ago) }}s ago</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <hr style="margin: 15px 0;">
+                    
+                    <!-- Indicadores de rendimiento -->
+                    {% set fps_efficiency = (stats.fps_total / 30) * 100 %}
+                    {% if fps_efficiency >= 90 %}
+                        <div class="performance-indicator perf-excellent">
+                            ✅ <strong>Excelente:</strong> FPS muy alto ({{ "%.1f"|format(fps_efficiency) }}%)
+                        </div>
+                    {% elif fps_efficiency >= 70 %}
+                        <div class="performance-indicator perf-good">
+                            🟡 <strong>Bueno:</strong> FPS aceptable ({{ "%.1f"|format(fps_efficiency) }}%)
+                        </div>
+                    {% else %}
+                        <div class="performance-indicator perf-poor">
+                            🔴 <strong>Mejorable:</strong> FPS bajo ({{ "%.1f"|format(fps_efficiency) }}%)
+                        </div>
+                    {% endif %}
+                    
+                    {% if stats.avg_process_time_ms < 5 %}
+                        <div class="performance-indicator perf-excellent">
+                            ⚡ <strong>Procesamiento ultra-rápido:</strong> {{ "%.1f"|format(stats.avg_process_time_ms) }}ms
+                        </div>
+                    {% elif stats.avg_process_time_ms < 15 %}
+                        <div class="performance-indicator perf-good">
+                            🟡 <strong>Procesamiento normal:</strong> {{ "%.1f"|format(stats.avg_process_time_ms) }}ms
+                        </div>
+                    {% else %}
+                        <div class="performance-indicator perf-poor">
+                            🐌 <strong>Procesamiento lento:</strong> {{ "%.1f"|format(stats.avg_process_time_ms) }}ms
+                        </div>
+                    {% endif %}
+                    
+                {% else %}
+                    <p>Sin estadísticas disponibles</p>
+                {% endif %}
+                
+                <h3>🔌 Configuración:</h3>
+                <div class="stat-row">
+                    <span class="stat-label">HTTP Port:</span>
+                    <span>5000</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">MJPEG Port:</span>
+                    <span>5001</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Endpoint HTTP:</span>
+                    <span>/upload</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Endpoint MJPEG:</span>
+                    <span>/mjpeg_stream</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9em;">
+            <p>💡 <strong>Clients disponibles:</strong></p>
+            <p>• optimized_turbo_client.py (TurboJPEG + Multithreading)</p>
+            <p>• mjpeg_stream_client.py (MJPEG Stream continuo)</p>
+            <p>• remote_client.py (HTTP POST tradicional)</p>
+        </div>
+    </div>
+</body>
+</html>
